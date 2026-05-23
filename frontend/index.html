@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قرار — Qarar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-void: #070a0c;
+      --bg-primary: #0c0f12;
+      --bg-secondary: #111518;
+      --bg-elevated: #161b20;
+      --bg-input: #1a2025;
+      --gold-pure: #c9a84c;
+      --gold-bright: #e8c878;
+      --gold-warm: #d4a853;
+      --gold-glow: rgba(201,168,76,0.15);
+      --gold-subtle: rgba(201,168,76,0.08);
+      --gold-border: rgba(201,168,76,0.18);
+      --gold-border-hover: rgba(201,168,76,0.35);
+      --text-bright: #f0ece4;
+      --text-body: #c8c4bc;
+      --text-muted: #6b6760;
+      --text-ghost: #3a3835;
+      --success: #4a9e6b;
+      --error: #ef4444;
+      --user-bg: #141e17;
+      --user-border: rgba(74,158,107,0.2);
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      background: var(--bg-void);
+      color: var(--text-body);
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30%; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 600px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c9a84c' fill-opacity='0.018'%3E%3Cpath d='M40 0L50 10L60 0L70 10L80 0L80 10L70 20L80 30L80 40L70 30L60 40L50 30L40 40L30 30L20 40L10 30L0 40L0 30L10 20L0 10L0 0L10 10L20 0L30 10Z'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ─── Language Switcher ─── */
+    .lang-switcher {
+      position: fixed; top: 20px;
+      inset-inline-start: 20px;
+      display: flex; gap: 2px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--gold-border);
+      border-radius: 8px; padding: 3px;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+    }
+    .lang-btn {
+      padding: 5px 12px; border: none;
+      border-radius: 5px; font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: all 0.25s;
+      background: transparent; color: var(--text-muted);
+      font-family: 'Cairo', sans-serif;
+    }
+    .lang-btn.active { background: var(--gold-pure); color: #0a0d0f; font-weight: 600; }
+    .lang-btn:not(.active):hover { color: var(--text-body); background: rgba(255,255,255,0.04); }
+
+    /* ═══════════════════════════════════════
+       AUTH SCREEN
+    ═══════════════════════════════════════ */
+    #authScreen {
+      position: fixed; inset: 0;
+      display: flex; z-index: 5;
+    }
+
+    .auth-left {
+      flex: 0 0 60%;
+      background: linear-gradient(135deg, #070a0c 0%, #0c1015 100%);
+      border-inline-end: 1px solid var(--gold-border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      padding: 60px 40px;
+    }
+
+    .auth-left::before {
+      content: '';
+      position: absolute; top: -20%; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 500px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .auth-branding {
+      position: relative; z-index: 1;
+      text-align: center; max-width: 420px;
+    }
+
+    .auth-moon {
+      font-size: 72px;
+      animation: float 5s ease-in-out infinite;
+      filter: drop-shadow(0 0 30px rgba(201,168,76,0.5));
+      display: block; margin-bottom: 24px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-14px) rotate(5deg); }
+    }
+
+    .auth-logo-name {
+      font-family: 'Amiri', serif;
+      font-size: 52px; font-weight: 700;
+      color: var(--gold-pure);
+      letter-spacing: 1px; margin-bottom: 16px;
+    }
+
+    .auth-hero-tagline {
+      font-size: 24px; color: #e8e4dc;
+      margin-bottom: 8px; font-weight: 500;
+    }
+
+    .auth-hero-sub {
+      font-size: 16px; color: var(--text-muted);
+      margin-bottom: 36px;
+    }
+
+    .auth-divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
+      margin: 0 auto 32px;
+    }
+
+    .auth-pills {
+      display: flex; flex-direction: column; gap: 10px;
+      align-items: center;
+    }
+
+    .auth-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 18px;
+      background: rgba(201,168,76,0.06);
+      border: 1px solid var(--gold-border);
+      border-radius: 20px;
+      font-size: 13px; color: var(--gold-pure);
+    }
+
+    .auth-pill::before { content: '•'; color: var(--gold-pure); }
+
+    .auth-right {
+      flex: 0 0 40%;
+      background: var(--bg-secondary);
+      display: flex; align-items: center;
+      justify-content: center; padding: 40px;
+      overflow-y: auto;
+    }
+
+    /* Auth Forms */
+    .auth-form { width: 100%; max-width: 360px; }
+
+    .auth-form-title {
+      font-family: 'Amiri', serif;
+      font-size: 26px; color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+
+    .auth-form-subtitle {
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+
+    .form-label {
+      display: block; font-size: 12px;
+      color: var(--text-muted); margin-bottom: 6px;
+    }
+
+    .auth-input {
+      width: 100%; padding: 12px 16px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--gold-border);
+      border-radius: 10px;
+      color: var(--text-bright);
+      font-size: 14px; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+
+    .auth-input::placeholder { color: var(--text-ghost); }
+    .auth-input:focus {
+      border-color: rgba(201,168,76,0.4);
+      box-shadow: 0 0 0 3px var(--gold-subtle);
+    }
+    .auth-input.is-error { border-color: var(--error); }
+
+    .field-error {
+      font-size: 11px; color: var(--error);
+      margin-top: 5px; display: block; min-height: 16px;
+    }
+
+    .password-wrapper { position: relative; }
+    .password-wrapper .auth-input { padding-inline-end: 48px; }
+
+    .toggle-pass {
+      position: absolute;
+      inset-inline-end: 14px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 16px; padding: 2px;
+      transition: color 0.2s;
+    }
+    .toggle-pass:hover { color: var(--gold-pure); }
+
+    .strength-wrap {
+      margin-top: 8px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .strength-bar-track {
+      flex: 1; height: 4px;
+      background: var(--bg-elevated);
+      border-radius: 2px; overflow: hidden;
+    }
+    .strength-bar {
+      height: 100%; border-radius: 2px;
+      width: 0%; transition: width 0.3s, background 0.3s;
+    }
+    .strength-label {
+      font-size: 11px; color: var(--text-ghost);
+      width: 40px; text-align: start;
+    }
+
+    .auth-btn {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--gold-warm), var(--gold-pure));
+      border: none; border-radius: 10px;
+      color: #0a0d0f; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      margin-top: 8px; font-family: inherit;
+    }
+
+    .auth-btn:hover:not(:disabled) {
+      box-shadow: 0 6px 20px rgba(201,168,76,0.4);
+      transform: translateY(-1px);
+    }
+    .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .auth-switch {
+      text-align: center; margin-top: 16px;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .auth-switch a {
+      color: var(--gold-pure); cursor: pointer;
+      text-decoration: none; font-weight: 500;
+    }
+    .auth-switch a:hover { color: var(--gold-bright); }
+
+    .forgot-link {
+      display: block; text-align: end;
+      font-size: 12px; color: var(--text-muted);
+      cursor: pointer; margin-top: 6px;
+      transition: color 0.2s;
+    }
+    .forgot-link:hover { color: var(--gold-pure); }
+
+    .auth-error-banner {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; color: #f87171;
+      margin-bottom: 16px; display: none;
+    }
+
+    .auth-success-banner {
+      background: rgba(74,158,107,0.1);
+      border: 1px solid rgba(74,158,107,0.3);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; color: #6ee7b7;
+      margin-bottom: 16px; display: none;
+    }
+
+    /* OTP */
+    .otp-email-display {
+      font-weight: 600; color: var(--gold-pure);
+      direction: ltr; unicode-bidi: isolate;
+    }
+
+    .otp-inputs {
+      display: flex; gap: 10px;
+      justify-content: center;
+      margin: 28px 0; direction: ltr;
+    }
+
+    .otp-input {
+      width: 64px; height: 72px;
+      text-align: center; font-size: 30px; font-weight: 700;
+      background: var(--bg-elevated);
+      border: 2px solid var(--gold-border);
+      border-radius: 12px; color: var(--gold-pure);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', monospace;
+    }
+
+    .otp-input:focus {
+      border-color: var(--gold-pure);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+    }
+    .otp-input.filled { border-color: rgba(201,168,76,0.5); }
+
+    .otp-timer {
+      text-align: center; font-size: 13px;
+      color: var(--text-muted); margin-bottom: 20px;
+    }
+    .timer-count { color: var(--gold-pure); font-weight: 600; }
+    .timer-count.expired { color: var(--error); }
+
+    .resend-btn {
+      width: 100%; padding: 10px;
+      background: transparent;
+      border: 1px solid var(--gold-border);
+      border-radius: 10px; color: var(--text-muted);
+      font-size: 13px; cursor: pointer;
+      transition: all 0.2s; margin-top: 10px;
+      font-family: inherit;
+    }
+    .resend-btn:not(:disabled):hover {
+      border-color: var(--gold-border-hover); color: var(--gold-pure);
+    }
+    .resend-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    @media (max-width: 768px) {
+      .auth-left { display: none; }
+      .auth-right { flex: 1; }
+    }
+
+    /* ═══════════════════════════════════════
+       APP SCREEN (CHAT)
+    ═══════════════════════════════════════ */
+    #appScreen {
+      position: fixed; inset: 0;
+      display: none; z-index: 5;
+    }
+
+    .app {
+      display: flex; height: 100vh;
+      position: relative; z-index: 1;
+    }
+
+    /* ─── Sidebar ─── */
+    .sidebar {
+      width: 280px; flex-shrink: 0;
+      background: linear-gradient(180deg, #111518 0%, #0e1215 100%);
+      border-inline-end: 1px solid var(--gold-border);
+      display: flex; flex-direction: column;
+      position: relative; overflow: hidden;
+    }
+
+    .sidebar::before {
+      content: ''; position: absolute;
+      top: 0; inset-inline-start: 0; right: 0; height: 200px;
+      background: linear-gradient(180deg, rgba(201,168,76,0.04) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px 16px;
+      display: flex; flex-direction: column; gap: 14px;
+      position: relative; z-index: 1;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 12px;
+      padding-top: 44px;
+    }
+
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: var(--gold-subtle);
+      border: 1px solid var(--gold-border);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+
+    .logo-name {
+      font-family: 'Amiri', serif;
+      font-size: 22px; font-weight: 700;
+      color: var(--gold-pure); letter-spacing: 0.5px; line-height: 1.2;
+    }
+
+    .logo-sub {
+      font-size: 11px; color: var(--text-muted);
+      letter-spacing: 0.4px; margin-top: 2px;
+    }
+
+    .user-bar {
+      display: flex; align-items: center;
+      gap: 10px; padding: 10px 14px;
+      background: var(--gold-subtle);
+      border: 1px solid var(--gold-border);
+      border-radius: 10px; margin-bottom: 2px;
+    }
+
+    .user-bar-avatar {
+      width: 32px; height: 32px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--gold-border);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+
+    .user-bar-info { flex: 1; min-width: 0; }
+
+    .user-bar-name {
+      font-size: 13px; color: var(--text-bright);
+      font-weight: 500; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .user-bar-badge {
+      font-size: 10px; padding: 1px 7px;
+      border-radius: 20px; display: inline-block; margin-top: 2px;
+    }
+    .user-bar-badge.free {
+      background: rgba(58,56,53,0.6); color: var(--text-ghost);
+      border: 1px solid var(--text-ghost);
+    }
+    .user-bar-badge.premium {
+      background: var(--gold-subtle); color: var(--gold-pure);
+      border: 1px solid var(--gold-border);
+    }
+
+    .logout-btn {
+      background: none; border: none;
+      color: var(--text-ghost); cursor: pointer;
+      font-size: 14px; padding: 4px;
+      transition: color 0.2s; flex-shrink: 0;
+    }
+    .logout-btn:hover { color: #ef4444; }
+
+    .new-chat-btn {
+      width: 100%; padding: 11px 16px;
+      background: transparent;
+      border: 1px solid var(--gold-border);
+      border-radius: 10px; color: var(--gold-pure);
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px;
+      justify-content: center;
+      font-family: inherit;
+    }
+    .new-chat-btn:hover {
+      background: var(--gold-glow);
+      border-color: var(--gold-border-hover);
+    }
+
+    .conversations-list {
+      flex: 1; overflow-y: auto;
+      padding: 6px 12px; position: relative; z-index: 1;
+    }
+    .conversations-list::-webkit-scrollbar { width: 3px; }
+    .conversations-list::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 2px; }
+
+    .conv-item {
+      padding: 10px 14px; border-radius: 8px;
+      cursor: pointer; transition: all 0.15s;
+      margin-bottom: 2px; border: 1px solid transparent;
+      position: relative; overflow: hidden;
+    }
+    .conv-item::before {
+      content: '';
+      position: absolute; inset-inline-start: 0;
+      top: 50%; transform: translateY(-50%);
+      width: 2px; height: 0;
+      background: var(--gold-pure); border-radius: 1px;
+      transition: height 0.2s;
+    }
+    .conv-item:hover::before, .conv-item.active::before { height: 60%; }
+    .conv-item:hover { background: var(--bg-elevated); border-color: var(--gold-border); }
+    .conv-item.active { background: var(--gold-subtle); border-color: var(--gold-border); }
+
+    .conv-title {
+      font-size: 13px; color: var(--text-body);
+      white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis; margin-bottom: 3px;
+    }
+    .conv-date { font-size: 11px; color: var(--text-ghost); }
+
+    .conv-empty {
+      font-size: 12px; color: var(--text-ghost);
+      text-align: center; padding: 32px 16px; line-height: 2;
+    }
+
+    .upgrade-btn {
+      margin: 0 12px 12px;
+      padding: 11px 16px;
+      background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.06));
+      border: 1px solid var(--gold-border);
+      border-radius: 10px; color: var(--gold-pure);
+      font-size: 12px; cursor: pointer;
+      transition: all 0.2s; text-align: center;
+      font-family: inherit;
+    }
+    .upgrade-btn:hover {
+      border-color: var(--gold-border-hover);
+      background: linear-gradient(135deg, rgba(201,168,76,0.18), rgba(201,168,76,0.1));
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--gold-border);
+      text-align: center; position: relative; z-index: 1;
+    }
+
+    .footer-tagline {
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .footer-verse {
+      font-family: 'Amiri', serif;
+      font-size: 11px; color: var(--text-ghost);
+      line-height: 1.8;
+    }
+
+    /* ─── Chat Area ─── */
+    .chat-area {
+      flex: 1; display: flex; flex-direction: column;
+      min-width: 0; background: var(--bg-primary); position: relative;
+    }
+
+    .chat-header {
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--gold-border);
+      display: flex; align-items: center; gap: 14px;
+      background: linear-gradient(180deg, rgba(17,21,24,0.95) 0%, transparent 100%);
+      backdrop-filter: blur(10px);
+      position: relative; z-index: 10;
+    }
+
+    .qarar-avatar {
+      width: 40px; height: 40px;
+      background: var(--gold-subtle);
+      border: 1px solid var(--gold-border);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+
+    .qarar-name {
+      font-family: 'Amiri', serif;
+      font-size: 18px; color: var(--text-bright); font-weight: 700; line-height: 1.2;
+    }
+
+    .qarar-status {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--text-muted); margin-top: 2px;
+    }
+
+    .status-dot {
+      width: 7px; height: 7px;
+      background: var(--success); border-radius: 50%;
+      box-shadow: 0 0 6px rgba(74,158,107,0.6);
+      animation: statusPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; box-shadow: 0 0 12px rgba(74,158,107,0.9); }
+    }
+
+    .header-user-greeting {
+      margin-inline-start: auto;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .header-user-name { color: var(--gold-pure); font-weight: 500; }
+
+    /* Limit Banner */
+    .limit-banner {
+      display: none;
+      padding: 10px 28px;
+      background: rgba(201,168,76,0.07);
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--gold-pure);
+    }
+    .limit-banner.hidden { display: none !important; }
+    .limit-banner-upgrade {
+      margin-inline-start: auto;
+      font-size: 12px; color: var(--gold-pure);
+      cursor: pointer; text-decoration: underline;
+      background: none; border: none; font-family: inherit;
+    }
+
+    /* Messages */
+    .messages-container {
+      flex: 1; overflow-y: auto;
+      padding: 28px; display: flex;
+      flex-direction: column; gap: 20px;
+    }
+    .messages-container::-webkit-scrollbar { width: 4px; }
+    .messages-container::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 2px; }
+
+    .welcome {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px; text-align: center;
+      animation: fadeUp 0.7s ease; margin: auto; width: 100%;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .welcome-moon {
+      font-size: 60px; margin-bottom: 28px;
+      animation: float 5s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(201,168,76,0.4));
+    }
+
+    .welcome-title {
+      font-family: 'Amiri', serif; font-size: 34px;
+      color: var(--gold-pure); margin-bottom: 16px;
+    }
+
+    .welcome-verse {
+      font-family: 'Amiri', serif; font-size: 17px;
+      color: var(--text-body); font-style: italic;
+      margin-bottom: 6px; line-height: 1.7; max-width: 500px;
+    }
+
+    .welcome-verse-ref {
+      font-size: 12px; color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .welcome-desc {
+      font-size: 14px; color: var(--text-muted);
+      line-height: 2; max-width: 420px; margin-bottom: 36px;
+    }
+
+    .suggestions {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; max-width: 540px; width: 100%;
+    }
+
+    .suggestion-btn {
+      padding: 13px 16px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--gold-border);
+      border-radius: 12px; color: var(--text-muted);
+      font-size: 13px; cursor: pointer;
+      transition: all 0.2s; text-align: start;
+      line-height: 1.6;
+      font-family: inherit;
+    }
+    .suggestion-btn:hover {
+      border-color: var(--gold-border-hover);
+      color: var(--text-bright);
+      transform: translateY(-1px);
+    }
+
+    .message {
+      display: flex; gap: 12px;
+      animation: msgAppear 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 78%;
+    }
+
+    @keyframes msgAppear {
+      from { opacity: 0; transform: translateY(12px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+    .message.assistant { align-self: flex-start; }
+
+    .msg-avatar {
+      width: 34px; height: 34px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--gold-border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0; align-self: flex-start; margin-top: 2px;
+    }
+    .message.user .msg-avatar { background: var(--user-bg); border-color: var(--user-border); }
+
+    .msg-content { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+    .msg-bubble {
+      padding: 14px 18px; font-size: 14.5px;
+      line-height: 1.85; white-space: pre-wrap; word-break: break-word;
+    }
+
+    .message.user .msg-bubble {
+      background: var(--user-bg);
+      border: 1px solid var(--user-border);
+      border-radius: 18px 4px 18px 18px;
+    }
+
+    .message.assistant .msg-bubble {
+      background: var(--bg-elevated);
+      border: 1px solid var(--gold-border);
+      border-radius: 4px 18px 18px 18px;
+      position: relative;
+    }
+
+    .message.assistant .msg-bubble::before {
+      content: ''; position: absolute;
+      inset-inline-start: -1px; top: 12px;
+      width: 2px; height: 30px;
+      background: linear-gradient(180deg, var(--gold-pure), transparent);
+      border-radius: 1px;
+    }
+
+    .msg-time { font-size: 11px; color: var(--text-ghost); padding: 0 4px; }
+    .message.user .msg-time { text-align: end; }
+
+    .sources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .source-tag {
+      font-size: 11px; padding: 3px 9px;
+      background: var(--gold-subtle);
+      border: 1px solid var(--gold-border);
+      border-radius: 20px; color: var(--gold-pure);
+    }
+
+    .typing-indicator { align-self: flex-start; }
+    .typing-bubble {
+      background: var(--bg-elevated);
+      border: 1px solid var(--gold-border);
+      border-radius: 4px 18px 18px 18px;
+      padding: 16px 22px;
+      display: flex; gap: 6px; align-items: center;
+    }
+    .typing-dot {
+      width: 7px; height: 7px;
+      background: var(--gold-pure); border-radius: 50%;
+      animation: typingPulse 1.5s ease-in-out infinite; opacity: 0.3;
+    }
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingPulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    /* Input Area */
+    .input-area {
+      padding: 14px 28px 20px;
+      background: linear-gradient(0deg, var(--bg-primary) 60%, transparent);
+      position: relative; z-index: 5;
+    }
+
+    .input-wrapper {
+      display: flex; align-items: flex-end; gap: 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--gold-border);
+      border-radius: 16px; padding: 10px 14px;
+      transition: all 0.25s;
+    }
+
+    .input-wrapper:focus-within {
+      border-color: rgba(201,168,76,0.35);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.07);
+    }
+
+    .message-input {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--text-bright); font-size: 14px; line-height: 1.6;
+      resize: none; min-height: 24px; max-height: 140px;
+      overflow-y: auto; font-family: 'Cairo', sans-serif;
+    }
+    .message-input::placeholder { color: var(--text-ghost); }
+
+    .send-btn {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--gold-warm), var(--gold-pure));
+      border: none; border-radius: 11px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .send-btn:hover:not(:disabled) { transform: scale(1.06); }
+    .send-btn:active:not(:disabled) { transform: scale(0.95); }
+    .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    [dir="rtl"] .send-btn svg { transform: rotate(180deg); }
+
+    .input-hint {
+      text-align: center; font-size: 11px;
+      color: var(--text-ghost); margin-top: 10px;
+    }
+
+    /* Paywall Modal */
+    .paywall-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+    }
+    .paywall-overlay.hidden { display: none; }
+
+    .paywall-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--gold-border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 380px; width: 90%;
+      text-align: center;
+    }
+
+    .paywall-moon { font-size: 48px; margin-bottom: 16px; display: block; }
+
+    .paywall-title {
+      font-family: 'Amiri', serif;
+      font-size: 22px; color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+
+    .paywall-timer {
+      font-size: 14px; color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .paywall-divider {
+      width: 40px; height: 1px;
+      background: var(--gold-border);
+      margin: 0 auto 20px;
+    }
+
+    .paywall-sub {
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .paywall-upgrade-btn {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--gold-warm), var(--gold-pure));
+      border: none; border-radius: 10px;
+      color: #0a0d0f; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      margin-bottom: 12px;
+    }
+
+    .paywall-close {
+      background: none; border: none;
+      color: var(--text-muted); font-size: 13px;
+      cursor: pointer; font-family: inherit;
+    }
+    .paywall-close:hover { color: var(--text-body); }
+
+    * { scrollbar-width: thin; scrollbar-color: var(--gold-border) transparent; }
+
+    @media (max-width: 720px) {
+      .sidebar { display: none; }
+      .suggestions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="lang-ar">
+
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="ar" onclick="setLanguage('ar')">العربية</button>
+    <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+  </div>
+
+  <!-- ══════════════ AUTH SCREEN ══════════════ -->
+  <div id="authScreen">
+
+    <div class="auth-left">
+      <div class="auth-branding">
+        <span class="auth-moon">🌙</span>
+        <h1 class="auth-logo-name">قرار</h1>
+        <p class="auth-hero-tagline">رفيقك حين تحتاج</p>
+        <p class="auth-hero-sub">من يسمعك دون حكم</p>
+        <div class="auth-divider"></div>
+        <div class="auth-pills">
+          <span class="auth-pill">يسمع قبل أن يتكلم</span>
+          <span class="auth-pill">من حكمة تراثنا الإسلامي</span>
+          <span class="auth-pill">خصوصيتك محمية تماماً</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-right">
+
+      <!-- Login Form -->
+      <div id="loginForm" class="auth-form">
+        <h2 class="auth-form-title">أهلاً بعودتك</h2>
+        <p class="auth-form-subtitle">سجّل دخولك للمتابعة</p>
+        <div class="auth-error-banner" id="loginError"></div>
+
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input type="email" id="loginEmail" class="auth-input" placeholder="example@email.com" dir="ltr"
+            oninput="clearFieldError('loginEmail','loginEmailErr')">
+          <span class="field-error" id="loginEmailErr"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">كلمة المرور</label>
+          <div class="password-wrapper">
+            <input type="password" id="loginPassword" class="auth-input" dir="ltr"
+              oninput="clearFieldError('loginPassword','loginPassErr')"
+              onkeydown="if(event.key==='Enter') handleLogin()">
+            <button class="toggle-pass" type="button" onclick="togglePass('loginPassword',this)">👁</button>
+          </div>
+          <span class="field-error" id="loginPassErr"></span>
+          <span class="forgot-link" onclick="showForgotForm()">نسيت كلمة المرور؟</span>
+        </div>
+
+        <button class="auth-btn" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
+
+        <p class="auth-switch">
+          ليس لديك حساب؟
+          <a onclick="showSignupForm()">سجّل الآن</a>
+        </p>
+      </div>
+
+      <!-- Signup Form -->
+      <div id="signupForm" class="auth-form" style="display:none">
+        <h2 class="auth-form-title">حساب جديد</h2>
+        <p class="auth-form-subtitle">انضم إلى قرار</p>
+        <div class="auth-error-banner" id="signupError"></div>
+
+        <div class="form-group">
+          <label class="form-label">الاسم الكامل</label>
+          <input type="text" id="signupName" class="auth-input" placeholder="اسمك الكامل"
+            oninput="clearFieldError('signupName','signupNameErr')">
+          <span class="field-error" id="signupNameErr"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input type="email" id="signupEmail" class="auth-input" placeholder="example@email.com" dir="ltr"
+            oninput="clearFieldError('signupEmail','signupEmailErr')">
+          <span class="field-error" id="signupEmailErr"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">العمر</label>
+          <input type="number" id="signupAge" class="auth-input" placeholder="25" min="13" max="120" dir="ltr"
+            oninput="clearFieldError('signupAge','signupAgeErr')">
+          <span class="field-error" id="signupAgeErr"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">كلمة المرور</label>
+          <div class="password-wrapper">
+            <input type="password" id="signupPassword" class="auth-input" dir="ltr"
+              oninput="updatePasswordStrength(this.value); clearFieldError('signupPassword','signupPassErr')">
+            <button class="toggle-pass" type="button" onclick="togglePass('signupPassword',this)">👁</button>
+          </div>
+          <div class="strength-wrap">
+            <div class="strength-bar-track"><div class="strength-bar" id="strengthBar"></div></div>
+            <span class="strength-label" id="strengthLabel"></span>
+          </div>
+          <span class="field-error" id="signupPassErr"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">تأكيد كلمة المرور</label>
+          <div class="password-wrapper">
+            <input type="password" id="signupConfirmPassword" class="auth-input" dir="ltr"
+              oninput="clearFieldError('signupConfirmPassword','signupConfirmErr')">
+            <button class="toggle-pass" type="button" onclick="togglePass('signupConfirmPassword',this)">👁</button>
+          </div>
+          <span class="field-error" id="signupConfirmErr"></span>
+        </div>
+
+        <button class="auth-btn" id="signupBtn" onclick="handleSignup()">إنشاء الحساب</button>
+
+        <p class="auth-switch">
+          لديك حساب؟
+          <a onclick="showLoginForm()">سجّل دخولك</a>
+        </p>
+      </div>
+
+      <!-- OTP Verification Form -->
+      <div id="otpForm" class="auth-form" style="display:none">
+        <h2 class="auth-form-title">تحقق من بريدك</h2>
+        <p class="auth-form-subtitle">
+          أرسلنا رمزاً من 4 أرقام إلى
+          <span class="otp-email-display" id="otpEmailDisplay"></span>
+        </p>
+        <div class="auth-error-banner" id="otpError"></div>
+
+        <div class="otp-inputs">
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp0"
+            oninput="otpAdvance(this,0)" onkeydown="otpBackspace(event,this,-1)" onpaste="otpPaste(event)">
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp1"
+            oninput="otpAdvance(this,1)" onkeydown="otpBackspace(event,this,0)">
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp2"
+            oninput="otpAdvance(this,2)" onkeydown="otpBackspace(event,this,1)">
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="otp3"
+            oninput="otpAdvance(this,3)" onkeydown="otpBackspace(event,this,2)">
+        </div>
+
+        <div class="otp-timer">
+          الرمز صالح لـ <span class="timer-count" id="timerDisplay">10:00</span>
+        </div>
+
+        <button class="auth-btn" id="otpVerifyBtn" onclick="handleVerifyOTP()">تحقق</button>
+        <button class="resend-btn" id="resendBtn" onclick="handleResendOTP()" disabled>إعادة الإرسال</button>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div id="forgotForm" class="auth-form" style="display:none">
+        <h2 class="auth-form-title">إعادة تعيين كلمة المرور</h2>
+        <p class="auth-form-subtitle">أدخل بريدك وسنرسل لك رمز التحقق</p>
+        <div class="auth-error-banner" id="forgotError"></div>
+        <div class="auth-success-banner" id="forgotSuccess"></div>
+
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input type="email" id="forgotEmail" class="auth-input" placeholder="example@email.com" dir="ltr"
+            oninput="clearFieldError('forgotEmail','forgotEmailErr')"
+            onkeydown="if(event.key==='Enter') handleForgotPassword()">
+          <span class="field-error" id="forgotEmailErr"></span>
+        </div>
+
+        <button class="auth-btn" id="forgotBtn" onclick="handleForgotPassword()">إرسال الرمز</button>
+
+        <p class="auth-switch">
+          <a onclick="showLoginForm()">عودة لتسجيل الدخول</a>
+        </p>
+      </div>
+
+      <!-- Reset Password Form -->
+      <div id="resetForm" class="auth-form" style="display:none">
+        <h2 class="auth-form-title">كلمة مرور جديدة</h2>
+        <p class="auth-form-subtitle">أدخل الرمز الذي أرسلناه وكلمة المرور الجديدة</p>
+        <div class="auth-error-banner" id="resetError"></div>
+
+        <div class="otp-inputs" style="margin:20px 0 16px">
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="resetOtp0"
+            oninput="otpAdvance(this,0,'reset')" onkeydown="otpBackspace(event,this,-1,'reset')" onpaste="otpPaste(event,'reset')">
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="resetOtp1"
+            oninput="otpAdvance(this,1,'reset')" onkeydown="otpBackspace(event,this,0,'reset')">
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="resetOtp2"
+            oninput="otpAdvance(this,2,'reset')" onkeydown="otpBackspace(event,this,1,'reset')">
+          <input type="text" inputmode="numeric" maxlength="1" class="otp-input" id="resetOtp3"
+            oninput="otpAdvance(this,3,'reset')" onkeydown="otpBackspace(event,this,2,'reset')">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">كلمة المرور الجديدة</label>
+          <div class="password-wrapper">
+            <input type="password" id="resetNewPassword" class="auth-input" dir="ltr"
+              oninput="clearFieldError('resetNewPassword','resetPassErr')">
+            <button class="toggle-pass" type="button" onclick="togglePass('resetNewPassword',this)">👁</button>
+          </div>
+          <span class="field-error" id="resetPassErr"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">تأكيد كلمة المرور</label>
+          <div class="password-wrapper">
+            <input type="password" id="resetConfirmPassword" class="auth-input" dir="ltr"
+              oninput="clearFieldError('resetConfirmPassword','resetConfirmErr')">
+            <button class="toggle-pass" type="button" onclick="togglePass('resetConfirmPassword',this)">👁</button>
+          </div>
+          <span class="field-error" id="resetConfirmErr"></span>
+        </div>
+
+        <button class="auth-btn" id="resetBtn" onclick="handleResetPassword()">تغيير كلمة المرور</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ APP SCREEN ══════════════ -->
+  <div id="appScreen">
+    <div class="app">
+
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <div class="logo-icon">🌙</div>
+            <div>
+              <div class="logo-name">قرار</div>
+              <div class="logo-sub">مرافق نفسي إسلامي</div>
+            </div>
+          </div>
+
+          <div class="user-bar">
+            <div class="user-bar-avatar">👤</div>
+            <div class="user-bar-info">
+              <div class="user-bar-name" id="sidebarUserName">—</div>
+              <span class="user-bar-badge free" id="sidebarBadge">الخطة المجانية</span>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()" title="تسجيل الخروج">↩</button>
+          </div>
+
+          <button class="new-chat-btn" onclick="newChat()">+ محادثة جديدة</button>
+        </div>
+
+        <div class="conversations-list" id="convList">
+          <div class="conv-empty">محادثاتك ستظهر هنا</div>
+        </div>
+
+        <button class="upgrade-btn" id="upgradeBtn" onclick="showUpgradeInfo()" style="display:none">
+          ترقية للـ Premium — $5 شهرياً
+        </button>
+
+        <div class="sidebar-footer">
+          <div class="footer-tagline">معك حين يثقل الصمت</div>
+          <div class="footer-verse">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
+        </div>
+      </aside>
+
+      <main class="chat-area">
+        <div class="chat-header">
+          <div class="qarar-avatar">🌙</div>
+          <div>
+            <div class="qarar-name">قرار</div>
+            <div class="qarar-status">
+              <div class="status-dot"></div>
+              <span>هنا لأسمعك</span>
+            </div>
+          </div>
+          <div class="header-user-greeting" id="headerGreeting" style="display:none">
+            مرحباً، <span class="header-user-name" id="headerUserName"></span>
+          </div>
+        </div>
+
+        <div class="limit-banner hidden" id="limitBanner">
+          <span id="limitBannerText">تبقى لك رسائل مجانية</span>
+          <button class="limit-banner-upgrade" onclick="showUpgradeInfo()">ترقية</button>
+        </div>
+
+        <div class="messages-container" id="messagesContainer"></div>
+
+        <div class="input-area">
+          <div class="input-wrapper">
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#0a0d0f">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+              </svg>
+            </button>
+            <textarea
+              id="messageInput"
+              class="message-input"
+              placeholder="شاركني ما يدور في بالك..."
+              rows="1" dir="rtl"
+              onkeydown="handleKeydown(event)"
+              oninput="handleInput(this)"
+            ></textarea>
+          </div>
+          <div class="input-hint">قرار يسمع — تكلم بحرية وأمان</div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Paywall Modal -->
+  <div class="paywall-overlay hidden" id="paywallModal">
+    <div class="paywall-card">
+      <span class="paywall-moon">🌙</span>
+      <div class="paywall-title">وصلت لحد الرسائل المجانية</div>
+      <div class="paywall-timer" id="paywallTimer">يتجدد قريباً</div>
+      <div class="paywall-divider"></div>
+      <div class="paywall-sub">أو اشترك للحصول على محادثات غير محدودة</div>
+      <button class="paywall-upgrade-btn" onclick="showUpgradeInfo()">ترقية للـ Premium — $5 شهرياً</button>
+      <button class="paywall-close" onclick="hidePaywallModal()">إغلاق</button>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:8000'
+      : 'https://YOUR_RAILWAY_URL.railway.app';
+
+    // ── State ──
+    let authToken = localStorage.getItem('qarar_token');
+    let currentUser = JSON.parse(localStorage.getItem('qarar_user') || 'null');
+    let currentLang = localStorage.getItem('qarar_lang') || 'ar';
+    let currentConversationId = null;
+    let isLoading = false;
+    let otpEmail = '';
+    let resetEmail = '';
+    let otpTimerInterval = null;
+
+    // ── Auth Helpers ──
+    function saveAuth(token, user) {
+      authToken = token;
+      currentUser = user;
+      localStorage.setItem('qarar_token', token);
+      localStorage.setItem('qarar_user', JSON.stringify(user));
+    }
+
+    function clearAuth() {
+      authToken = null;
+      currentUser = null;
+      localStorage.removeItem('qarar_token');
+      localStorage.removeItem('qarar_user');
+    }
+
+    function getHeaders() {
+      return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` };
+    }
+
+    // ── Language ──
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('qarar_lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+      document.body.classList.toggle('lang-en', lang === 'en');
+      document.body.classList.toggle('lang-ar', lang === 'ar');
+    }
+
+    // ── Screen Routing ──
+    function showAuthScreen() {
+      document.getElementById('authScreen').style.display = 'flex';
+      document.getElementById('appScreen').style.display = 'none';
+    }
+
+    function showChatScreen() {
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('appScreen').style.display = 'block';
+      populateUserUI();
+      renderWelcomeScreen();
+      loadConversations();
+    }
+
+    function populateUserUI() {
+      if (!currentUser) return;
+      document.getElementById('sidebarUserName').textContent = currentUser.name || '';
+      document.getElementById('headerUserName').textContent = currentUser.name || '';
+      document.getElementById('headerGreeting').style.display = '';
+
+      const status = currentUser.subscription_status || 'free';
+      const badge = document.getElementById('sidebarBadge');
+      if (status === 'active') {
+        badge.textContent = 'Premium';
+        badge.className = 'user-bar-badge premium';
+        document.getElementById('upgradeBtn').style.display = 'none';
+      } else {
+        badge.textContent = 'الخطة المجانية';
+        badge.className = 'user-bar-badge free';
+        document.getElementById('upgradeBtn').style.display = 'block';
+      }
+    }
+
+    // ── Form Switching ──
+    function hideAllForms() {
+      ['loginForm','signupForm','otpForm','forgotForm','resetForm'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+    }
+
+    function showLoginForm() {
+      hideAllForms();
+      document.getElementById('loginForm').style.display = '';
+    }
+
+    function showSignupForm() {
+      hideAllForms();
+      document.getElementById('signupForm').style.display = '';
+    }
+
+    function showOTPForm(email) {
+      otpEmail = email;
+      document.getElementById('otpEmailDisplay').textContent = email;
+      hideAllForms();
+      document.getElementById('otpForm').style.display = '';
+      document.getElementById('otp0').focus();
+      startOTPTimer();
+    }
+
+    function showForgotForm() {
+      hideAllForms();
+      document.getElementById('forgotForm').style.display = '';
+    }
+
+    function showResetForm(email) {
+      resetEmail = email;
+      hideAllForms();
+      document.getElementById('resetForm').style.display = '';
+      document.getElementById('resetOtp0').focus();
+    }
+
+    // ── Validation ──
+    function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+    function validateName(v) { return v.trim().length >= 2; }
+    function validateAge(v) { const n = parseInt(v); return !isNaN(n) && n >= 13 && n <= 120; }
+    function validatePassword(v) { return v.length >= 8; }
+
+    function showFieldError(inputId, errorId, msg) {
+      document.getElementById(inputId)?.classList.add('is-error');
+      const e = document.getElementById(errorId);
+      if (e) e.textContent = msg;
+    }
+
+    function clearFieldError(inputId, errorId) {
+      document.getElementById(inputId)?.classList.remove('is-error');
+      const e = document.getElementById(errorId);
+      if (e) e.textContent = '';
+    }
+
+    function showBanner(id, msg) {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = msg; el.style.display = 'block'; }
+    }
+
+    function hideBanner(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    }
+
+    function setBtn(btnId, loading, loadingText = '...') {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.disabled = loading;
+      if (loading) { btn.dataset.original = btn.textContent; btn.textContent = loadingText; }
+      else if (btn.dataset.original) btn.textContent = btn.dataset.original;
+    }
+
+    // ── Password Strength ──
+    function updatePasswordStrength(password) {
+      const bar = document.getElementById('strengthBar');
+      const label = document.getElementById('strengthLabel');
+      if (!password) { bar.style.width = '0%'; label.textContent = ''; return; }
+
+      let score = 0;
+      if (password.length >= 8) score++;
+      if (password.length >= 12) score++;
+      if (/[A-Z]/.test(password)) score++;
+      if (/[0-9]/.test(password)) score++;
+      if (/[^A-Za-z0-9]/.test(password)) score++;
+
+      if (score <= 1) {
+        bar.style.width = '20%'; bar.style.background = '#ef4444';
+        label.textContent = 'ضعيفة'; label.style.color = '#ef4444';
+      } else if (score <= 2) {
+        bar.style.width = '50%'; bar.style.background = '#f59e0b';
+        label.textContent = 'متوسطة'; label.style.color = '#f59e0b';
+      } else if (score <= 3) {
+        bar.style.width = '75%'; bar.style.background = '#10b981';
+        label.textContent = 'جيدة'; label.style.color = '#10b981';
+      } else {
+        bar.style.width = '100%'; bar.style.background = '#c9a84c';
+        label.textContent = 'قوية'; label.style.color = '#c9a84c';
+      }
+    }
+
+    function togglePass(inputId, btn) {
+      const input = document.getElementById(inputId);
+      input.type = input.type === 'password' ? 'text' : 'password';
+      btn.textContent = input.type === 'password' ? '👁' : '🙈';
+    }
+
+    // ── OTP Inputs ──
+    function otpAdvance(input, idx, prefix = '') {
+      input.value = input.value.replace(/\D/g, '').slice(0, 1);
+      const p = prefix ? 'resetOtp' : 'otp';
+      if (input.value) {
+        input.classList.add('filled');
+        if (idx < 3) document.getElementById(p + (idx + 1))?.focus();
+        else {
+          // Auto-submit on 4th digit
+          if (prefix === 'reset') handleResetPassword();
+          else handleVerifyOTP();
+        }
+      } else {
+        input.classList.remove('filled');
+      }
+    }
+
+    function otpBackspace(e, input, prevIdx, prefix = '') {
+      if (e.key === 'Backspace' && !input.value && prevIdx >= 0) {
+        const p = prefix ? 'resetOtp' : 'otp';
+        document.getElementById(p + prevIdx)?.focus();
+      }
+    }
+
+    function otpPaste(e, prefix = '') {
+      e.preventDefault();
+      const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 4);
+      const p = prefix ? 'resetOtp' : 'otp';
+      for (let i = 0; i < 4; i++) {
+        const el = document.getElementById(p + i);
+        if (el) {
+          el.value = pasted[i] || '';
+          el.classList.toggle('filled', !!pasted[i]);
+        }
+      }
+      if (pasted.length === 4) {
+        if (prefix === 'reset') handleResetPassword();
+        else handleVerifyOTP();
+      }
+    }
+
+    function getOTPCode(prefix = '') {
+      const p = prefix ? 'resetOtp' : 'otp';
+      return [0,1,2,3].map(i => document.getElementById(p+i)?.value || '').join('');
+    }
+
+    function clearOTPInputs(prefix = '') {
+      const p = prefix ? 'resetOtp' : 'otp';
+      [0,1,2,3].forEach(i => {
+        const el = document.getElementById(p+i);
+        if (el) { el.value = ''; el.classList.remove('filled'); }
+      });
+    }
+
+    // ── OTP Timer ──
+    function startOTPTimer(seconds = 600) {
+      if (otpTimerInterval) clearInterval(otpTimerInterval);
+      const display = document.getElementById('timerDisplay');
+      const resend = document.getElementById('resendBtn');
+      if (resend) resend.disabled = true;
+      let remaining = seconds;
+
+      otpTimerInterval = setInterval(() => {
+        remaining--;
+        const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+        const s = (remaining % 60).toString().padStart(2, '0');
+        if (display) display.textContent = `${m}:${s}`;
+        if (remaining <= 0) {
+          clearInterval(otpTimerInterval);
+          if (display) { display.textContent = '00:00'; display.classList.add('expired'); }
+          if (resend) resend.disabled = false;
+        }
+      }, 1000);
+    }
+
+    // ── Auth Handlers ──
+    async function handleSignup() {
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const age = document.getElementById('signupAge').value;
+      const password = document.getElementById('signupPassword').value;
+      const confirm = document.getElementById('signupConfirmPassword').value;
+
+      let valid = true;
+      hideBanner('signupError');
+
+      if (!validateName(name)) { showFieldError('signupName','signupNameErr','الاسم يجب أن يكون حرفين على الأقل'); valid = false; }
+      if (!validateEmail(email)) { showFieldError('signupEmail','signupEmailErr','البريد الإلكتروني غير صحيح'); valid = false; }
+      if (!validateAge(age)) { showFieldError('signupAge','signupAgeErr','العمر يجب أن يكون بين 13 و 120'); valid = false; }
+      if (!validatePassword(password)) { showFieldError('signupPassword','signupPassErr','كلمة المرور يجب أن تكون 8 أحرف على الأقل'); valid = false; }
+      if (password !== confirm) { showFieldError('signupConfirmPassword','signupConfirmErr','كلمتا المرور غير متطابقتين'); valid = false; }
+
+      if (!valid) return;
+
+      setBtn('signupBtn', true);
+      try {
+        const res = await fetch(`${API_BASE}/auth/signup`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ name, email, age: parseInt(age), password })
+        });
+        const data = await res.json();
+        if (!res.ok) { showBanner('signupError', data.detail || 'خطأ في التسجيل'); return; }
+        showOTPForm(email);
+      } catch (e) {
+        showBanner('signupError', 'خطأ في الاتصال بالخادم');
+      } finally {
+        setBtn('signupBtn', false);
+      }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      let valid = true;
+      hideBanner('loginError');
+
+      if (!validateEmail(email)) { showFieldError('loginEmail','loginEmailErr','البريد الإلكتروني غير صحيح'); valid = false; }
+      if (!password) { showFieldError('loginPassword','loginPassErr','كلمة المرور مطلوبة'); valid = false; }
+      if (!valid) return;
+
+      setBtn('loginBtn', true);
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (res.status === 403) { showOTPForm(email); return; }
+        if (!res.ok) { showBanner('loginError', data.detail || 'خطأ في تسجيل الدخول'); return; }
+
+        saveAuth(data.token, data.user);
+        showChatScreen();
+      } catch (e) {
+        showBanner('loginError', 'خطأ في الاتصال بالخادم');
+      } finally {
+        setBtn('loginBtn', false);
+      }
+    }
+
+    async function handleVerifyOTP() {
+      const code = getOTPCode();
+      if (code.length < 4) return;
+
+      hideBanner('otpError');
+      setBtn('otpVerifyBtn', true);
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/verify-otp`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ email: otpEmail, code })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showBanner('otpError', data.detail || 'رمز غير صحيح');
+          clearOTPInputs();
+          document.getElementById('otp0')?.focus();
+          return;
+        }
+
+        clearInterval(otpTimerInterval);
+        saveAuth(data.token, data.user);
+        showChatScreen();
+      } catch (e) {
+        showBanner('otpError', 'خطأ في الاتصال بالخادم');
+      } finally {
+        setBtn('otpVerifyBtn', false);
+      }
+    }
+
+    async function handleResendOTP() {
+      const resend = document.getElementById('resendBtn');
+      resend.disabled = true;
+      document.getElementById('timerDisplay')?.classList.remove('expired');
+      try {
+        await fetch(`${API_BASE}/auth/resend-otp`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ email: otpEmail })
+        });
+        clearOTPInputs();
+        startOTPTimer();
+      } catch {
+        resend.disabled = false;
+      }
+    }
+
+    async function handleForgotPassword() {
+      const email = document.getElementById('forgotEmail').value.trim();
+      hideBanner('forgotError');
+      hideBanner('forgotSuccess');
+
+      if (!validateEmail(email)) { showFieldError('forgotEmail','forgotEmailErr','البريد الإلكتروني غير صحيح'); return; }
+
+      setBtn('forgotBtn', true);
+      try {
+        const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        showBanner('forgotSuccess', data.message || 'إذا كان البريد مسجلاً، ستصلك رسالة');
+
+        // After 1.5s, move to reset form
+        setTimeout(() => showResetForm(email), 1500);
+      } catch {
+        showBanner('forgotError', 'خطأ في الاتصال بالخادم');
+      } finally {
+        setBtn('forgotBtn', false);
+      }
+    }
+
+    async function handleResetPassword() {
+      const code = getOTPCode('reset');
+      const newPassword = document.getElementById('resetNewPassword').value;
+      const confirm = document.getElementById('resetConfirmPassword').value;
+
+      if (code.length < 4) return;
+
+      let valid = true;
+      hideBanner('resetError');
+
+      if (!validatePassword(newPassword)) { showFieldError('resetNewPassword','resetPassErr','كلمة المرور يجب أن تكون 8 أحرف على الأقل'); valid = false; }
+      if (newPassword !== confirm) { showFieldError('resetConfirmPassword','resetConfirmErr','كلمتا المرور غير متطابقتين'); valid = false; }
+      if (!valid) return;
+
+      setBtn('resetBtn', true);
+      try {
+        const res = await fetch(`${API_BASE}/auth/reset-password`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ email: resetEmail, code, new_password: newPassword })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showBanner('resetError', data.detail || 'الرمز غير صحيح أو منتهي الصلاحية');
+          clearOTPInputs('reset');
+          document.getElementById('resetOtp0')?.focus();
+          return;
+        }
+
+        showLoginForm();
+        showBanner('loginError', '');
+        // Show success message briefly
+        const loginForm = document.getElementById('loginForm');
+        const successEl = document.createElement('div');
+        successEl.className = 'auth-success-banner';
+        successEl.style.display = 'block';
+        successEl.textContent = 'تم تغيير كلمة المرور بنجاح — سجّل دخولك';
+        loginForm.insertBefore(successEl, loginForm.querySelector('.form-group'));
+        setTimeout(() => successEl.remove(), 4000);
+      } catch {
+        showBanner('resetError', 'خطأ في الاتصال بالخادم');
+      } finally {
+        setBtn('resetBtn', false);
+      }
+    }
+
+    function handleLogout() {
+      clearInterval(otpTimerInterval);
+      clearAuth();
+      currentConversationId = null;
+      document.getElementById('convList').innerHTML = '';
+      showAuthScreen();
+      showLoginForm();
+    }
+
+    // ── Paywall ──
+    function showPaywallModal(detail) {
+      const info = typeof detail === 'object' ? detail : { message: detail, reset_in_minutes: 720 };
+      const mins = info.reset_in_minutes || 720;
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      document.getElementById('paywallModal').classList.remove('hidden');
+      document.getElementById('paywallTimer').textContent = `يتجدد خلال ${h} ساعة و${m} دقيقة`;
+    }
+
+    function hidePaywallModal() {
+      document.getElementById('paywallModal').classList.add('hidden');
+    }
+
+    function showUpgradeInfo() {
+      alert('للترقية إلى Premium، تواصل معنا عبر البريد الإلكتروني');
+    }
+
+    // ── Limit Banner ──
+    function updateLimitBanner(remaining) {
+      const banner = document.getElementById('limitBanner');
+      if (!banner) return;
+      if (!currentUser || currentUser.subscription_status === 'active') {
+        banner.classList.add('hidden'); return;
+      }
+      if (remaining <= 2 && remaining > 0) {
+        banner.classList.remove('hidden');
+        document.getElementById('limitBannerText').textContent =
+          `تبقى لك ${remaining} رسائل مجانية — تتجدد كل 12 ساعة`;
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    // ── Chat ──
+    function newChat() {
+      currentConversationId = null;
+      renderWelcomeScreen();
+      document.querySelectorAll('.conv-item').forEach(i => i.classList.remove('active'));
+    }
+
+    function renderWelcomeScreen() {
+      document.getElementById('messagesContainer').innerHTML = `
+        <div class="welcome" id="welcomeScreen">
+          <div class="welcome-moon">🌙</div>
+          <div class="welcome-title">أهلاً بك في قرار</div>
+          <div class="welcome-verse">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
+          <div class="welcome-verse-ref">سورة الرعد — ٢٨</div>
+          <div class="welcome-desc">أنا هنا أسمعك وأرافقك. تكلم بحرية عما تشعر به، وسأجلس معك من حكمة تراثنا الإسلامي.</div>
+          <div class="suggestions">
+            ${[
+              'أحس بثقل ومو قادر أحدد السبب',
+              'عندي قلق من المستقبل ومو عارف كيف أتعامل معه',
+              'أحس بوحدة رغم إن حواليني ناس',
+              'ذنوب ماضية تثقلني وما أقدر أسامح نفسي'
+            ].map(s => `<button class="suggestion-btn" onclick="sendSuggestion(this)">${escapeHtml(s)}</button>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function sendSuggestion(btn) {
+      const input = document.getElementById('messageInput');
+      input.value = btn.textContent.trim();
+      handleInput(input);
+      sendMessage();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      if (!message || isLoading) return;
+
+      document.getElementById('welcomeScreen')?.remove();
+      input.value = '';
+      input.style.height = 'auto';
+      document.getElementById('sendBtn').disabled = true;
+
+      appendMessage('user', message);
+      const typingId = showTyping();
+      isLoading = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/chat`, {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify({ message, conversation_id: currentConversationId })
+        });
+
+        if (res.status === 401) { handleLogout(); return; }
+
+        const data = await res.json();
+
+        if (res.status === 429) {
+          removeTyping(typingId);
+          showPaywallModal(data.detail);
+          return;
+        }
+
+        if (!res.ok) throw new Error(data.detail || 'خطأ');
+
+        currentConversationId = data.conversation_id;
+        removeTyping(typingId);
+        appendMessage('assistant', data.reply, data.sources);
+        updateLimitBanner(data.remaining_messages ?? 999);
+        loadConversations();
+
+      } catch (error) {
+        removeTyping(typingId);
+        if (error.message !== 'limit_reached') {
+          appendMessage('assistant', 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.');
+        }
+      } finally {
+        isLoading = false;
+      }
+    }
+
+    function appendMessage(role, content, sources = null) {
+      const container = document.getElementById('messagesContainer');
+      const time = new Date().toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' });
+
+      const el = document.createElement('div');
+      el.className = `message ${role}`;
+
+      let sourcesHtml = '';
+      if (sources && sources.length) {
+        const filtered = sources.filter(s => s.score > 0.3);
+        if (filtered.length) {
+          sourcesHtml = `<div class="sources">${filtered.map(s => `<span class="source-tag">📖 ${escapeHtml(s.book)}</span>`).join('')}</div>`;
+        }
+      }
+
+      el.innerHTML = `
+        <div class="msg-avatar">${role === 'user' ? '👤' : '🌙'}</div>
+        <div class="msg-content">
+          <div class="msg-bubble">${escapeHtml(content)}</div>
+          ${sourcesHtml}
+          <div class="msg-time">${time}</div>
+        </div>
+      `;
+
+      container.appendChild(el);
+      scrollToBottom();
+    }
+
+    function showTyping() {
+      const container = document.getElementById('messagesContainer');
+      const id = 'typing_' + Date.now();
+      const el = document.createElement('div');
+      el.className = 'typing-indicator message assistant';
+      el.id = id;
+      el.innerHTML = `
+        <div class="msg-avatar">🌙</div>
+        <div class="typing-bubble">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      `;
+      container.appendChild(el);
+      scrollToBottom();
+      return id;
+    }
+
+    function removeTyping(id) { document.getElementById(id)?.remove(); }
+
+    async function loadConversations() {
+      try {
+        const res = await fetch(`${API_BASE}/conversations`, { headers: getHeaders() });
+        if (!res.ok) return;
+        const data = await res.json();
+        renderConversations(data.conversations || []);
+      } catch {}
+    }
+
+    function renderConversations(conversations) {
+      const list = document.getElementById('convList');
+      if (!conversations.length) {
+        list.innerHTML = '<div class="conv-empty">محادثاتك ستظهر هنا</div>';
+        return;
+      }
+      list.innerHTML = conversations.map(conv => `
+        <div class="conv-item ${conv.id === currentConversationId ? 'active' : ''}"
+          onclick="loadConversation('${escapeHtml(conv.id)}')">
+          <div class="conv-title">${escapeHtml(conv.first_message)}</div>
+          <div class="conv-date">${formatDate(conv.created_at)}</div>
+        </div>
+      `).join('');
+    }
+
+    async function loadConversation(convId) {
+      try {
+        const res = await fetch(`${API_BASE}/conversation/${convId}`, { headers: getHeaders() });
+        if (!res.ok) return;
+        const data = await res.json();
+        currentConversationId = convId;
+        document.getElementById('messagesContainer').innerHTML = '';
+        data.messages.forEach(msg => appendMessage(msg.role, msg.content));
+        document.querySelectorAll('.conv-item').forEach(item =>
+          item.classList.toggle('active', item.getAttribute('onclick').includes(convId))
+        );
+      } catch (e) { console.error(e); }
+    }
+
+    // ── Helpers ──
+    function handleInput(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+      document.getElementById('sendBtn').disabled = el.value.trim() === '';
+    }
+
+    function handleKeydown(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
+
+    function scrollToBottom() {
+      const c = document.getElementById('messagesContainer');
+      c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
+    }
+
+    function escapeHtml(text) {
+      if (typeof text !== 'string') return String(text || '');
+      const div = document.createElement('div');
+      div.appendChild(document.createTextNode(text));
+      return div.innerHTML;
+    }
+
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' });
+    }
+
+    // ── Init ──
+    document.addEventListener('DOMContentLoaded', () => {
+      setLanguage(currentLang);
+      if (authToken && currentUser) {
+        showChatScreen();
+      } else {
+        showAuthScreen();
+        showLoginForm();
+      }
+    });
+  </script>
+</body>
+</html>

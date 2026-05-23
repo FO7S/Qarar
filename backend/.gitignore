@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+*.db
+*.sqlite
+Qdrant_DB_New/
+Qdrant_DB_Voyage/
+qarar.db
