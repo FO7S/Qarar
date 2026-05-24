@@ -14,12 +14,21 @@ load_dotenv()
 GMAIL_USER = os.getenv("GMAIL_USER")
 GMAIL_PASS = os.getenv("GMAIL_APP_PASSWORD", "").replace(" ", "")
 JWT_SECRET = os.getenv("JWT_SECRET", "qarar_secret_key_change_in_production_2024")
-ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
+_fernet = None
 
-if not ENCRYPTION_KEY:
-    ENCRYPTION_KEY = Fernet.generate_key().decode()
-
-fernet = Fernet(ENCRYPTION_KEY.encode() if isinstance(ENCRYPTION_KEY, str) else ENCRYPTION_KEY)
+def get_fernet():
+    global _fernet
+    if _fernet is None:
+        key = os.getenv("ENCRYPTION_KEY", "")
+        if not key:
+            key = Fernet.generate_key().decode()
+            print("[WARNING] No ENCRYPTION_KEY set — using temporary key")
+        try:
+            _fernet = Fernet(key.encode() if isinstance(key, str) else key)
+        except Exception as e:
+            print(f"[ERROR] Invalid ENCRYPTION_KEY: {e}")
+            _fernet = Fernet(Fernet.generate_key())
+    return _fernet
 
 
 # ==================== Password ====================
@@ -51,11 +60,11 @@ def verify_token(token: str) -> dict:
 # ==================== Encryption ====================
 
 def encrypt_message(text: str) -> str:
-    return fernet.encrypt(text.encode()).decode()
+    return get_fernet().encrypt(text.encode()).decode()
 
 def decrypt_message(encrypted: str) -> str:
     try:
-        return fernet.decrypt(encrypted.encode()).decode()
+        return get_fernet().decrypt(encrypted.encode()).decode()
     except Exception:
         return "[محتوى مشفر]"
 
