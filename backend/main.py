@@ -142,14 +142,18 @@ async def signup(req: SignupRequest):
         password_hash=hash_password(req.password)
     )
 
-    otp = generate_otp()
-    await database.save_otp(req.email, otp)
-    sent = send_otp_email(req.email, otp, req.name)
+    # Auto-verify (OTP disabled temporarily)
+    await database.verify_user_email(req.email)
+    token = create_token(str(user["id"]), user["email"])
 
     return {
-        "message": "تم إنشاء الحساب — تحقق من بريدك الإلكتروني",
-        "email": req.email,
-        "otp_sent": sent
+        "message": "تم إنشاء الحساب بنجاح",
+        "token": token,
+        "user": {
+            "id": str(user["id"]),
+            "name": user["name"],
+            "email": user["email"]
+        }
     }
 
 
