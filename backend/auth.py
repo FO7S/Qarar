@@ -105,7 +105,9 @@ def send_password_reset_email(email: str, otp: str, name: str = "") -> bool:
 
         msg.attach(MIMEText(html, "html"))
 
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.ehlo()
+            server.starttls()
             server.login(GMAIL_USER, GMAIL_PASS)
             server.sendmail(GMAIL_USER, email, msg.as_string())
 
@@ -145,7 +147,9 @@ def send_otp_email(email: str, otp: str, name: str = "") -> bool:
 
         msg.attach(MIMEText(html, "html"))
 
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.ehlo()
+            server.starttls()
             server.login(GMAIL_USER, GMAIL_PASS)
             server.sendmail(GMAIL_USER, email, msg.as_string())
 
