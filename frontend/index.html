@@ -109,17 +109,36 @@
       background: var(--bg-hover);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 6px 10px;
+      padding: 7px;
       cursor: pointer;
-      font-size: 16px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.2s;
-      line-height: 1;
       flex-shrink: 0;
     }
     .theme-toggle:hover {
-      background: var(--bg-input);
+      color: var(--primary);
       border-color: var(--border-focus);
     }
+
+    /* ── Moon SVG Icon ── */
+    .moon-icon { display: inline-block; color: var(--primary); }
+    .moon-icon-sm { width: 18px; height: 18px; }
+    .moon-icon-md { width: 24px; height: 24px; }
+    .moon-icon-lg { width: 36px; height: 36px; }
+    .moon-icon-xl {
+      width: 52px; height: 52px;
+      animation: breathe 5s ease-in-out infinite;
+      filter: drop-shadow(0 4px 16px rgba(107,143,113,0.35));
+    }
+
+    /* Theme toggle icon visibility */
+    [data-theme="light"] .icon-sun { display: none; }
+    [data-theme="light"] .icon-moon { display: block; }
+    [data-theme="dark"] .icon-sun { display: block; }
+    [data-theme="dark"] .icon-moon { display: none; }
 
     /* ═══════════════════════════════════════
        AUTH SCREEN
@@ -162,15 +181,13 @@
     }
 
     .auth-moon {
-      font-size: 64px;
-      animation: breathe 4s ease-in-out infinite;
-      filter: drop-shadow(0 4px 16px var(--primary-glow));
-      display: block; margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
     }
 
     @keyframes breathe {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      0%, 100% { transform: scale(1) rotate(-5deg); }
+      50% { transform: scale(1.04) rotate(5deg); }
     }
 
     .auth-logo-name {
@@ -402,7 +419,7 @@
       padding-bottom: 20px; margin-bottom: 16px;
       border-bottom: 1px solid var(--border);
     }
-    .auth-mobile-logo-moon { font-size: 36px; display: block; margin-bottom: 6px; }
+    .auth-mobile-logo-moon { display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
     .auth-mobile-logo-name {
       font-family: 'Amiri', serif;
       font-size: 26px; color: var(--primary); font-weight: 700;
@@ -669,9 +686,8 @@
     }
 
     .welcome-moon {
-      font-size: 56px; margin-bottom: 24px;
-      animation: breathe 4s ease-in-out infinite;
-      filter: drop-shadow(0 4px 12px var(--primary-glow));
+      margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: center;
     }
 
     .welcome-title {
@@ -872,7 +888,7 @@
       box-shadow: 0 20px 60px var(--shadow-md);
     }
 
-    .paywall-moon { font-size: 48px; margin-bottom: 16px; display: block; }
+    .paywall-moon { display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
     .paywall-title {
       font-family: 'Amiri', serif;
       font-size: 22px; color: var(--text-primary);
@@ -927,13 +943,14 @@
     /* ─── Drawer overlay ─── */
     .drawer-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.4);
+      background: rgba(0,0,0,0.5);
       z-index: 999;
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.3s;
+      transition: opacity 0.3s, visibility 0.3s;
     }
-    .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+    .drawer-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
 
     /* ══════════════════════════════════════════
        MOBILE — ≤768px
@@ -1039,7 +1056,11 @@
 
     <div class="auth-left">
       <div class="auth-branding">
-        <span class="auth-moon">🌙</span>
+        <span class="auth-moon">
+          <svg class="moon-icon moon-icon-xl" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
         <h1 class="auth-logo-name">قرار</h1>
         <p class="auth-hero-tagline">رفيقك حين تحتاج</p>
         <p class="auth-hero-sub">من يسمعك دون حكم</p>
@@ -1056,7 +1077,11 @@
 
       <!-- Mobile-only logo shown when hero panel is hidden -->
       <div class="auth-mobile-logo">
-        <span class="auth-mobile-logo-moon">🌙</span>
+        <span class="auth-mobile-logo-moon">
+          <svg class="moon-icon moon-icon-md" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
         <div class="auth-mobile-logo-name">قرار</div>
       </div>
 
@@ -1254,14 +1279,24 @@
         <div class="sidebar-header">
           <div class="logo-row">
             <div class="logo">
-              <div class="logo-icon">🌙</div>
+              <div class="logo-icon">
+                <svg class="moon-icon moon-icon-md" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
               <div>
                 <div class="logo-name">قرار</div>
                 <div class="logo-sub">مرافق نفسي إسلامي</div>
               </div>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" title="تبديل المظهر">
-              <span class="theme-icon">🌙</span>
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" width="18" height="18">
+                <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" width="18" height="18">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </button>
           </div>
 
@@ -1293,7 +1328,11 @@
 
       <main class="chat-area">
         <div class="chat-header">
-          <div class="qarar-avatar">🌙</div>
+          <div class="qarar-avatar">
+            <svg class="moon-icon moon-icon-sm" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
           <div>
             <div class="qarar-name">قرار</div>
             <div class="qarar-status">
@@ -1343,7 +1382,11 @@
   <!-- Paywall Modal -->
   <div class="paywall-overlay hidden" id="paywallModal">
     <div class="paywall-card">
-      <span class="paywall-moon">🌙</span>
+      <span class="paywall-moon">
+        <svg class="moon-icon moon-icon-lg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
       <div class="paywall-title">وصلت لحد الرسائل المجانية</div>
       <div class="paywall-timer" id="paywallTimer">يتجدد قريباً</div>
       <div class="paywall-divider"></div>
@@ -1374,8 +1417,6 @@
       const next = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('qarar_theme', next);
-      const icon = document.querySelector('.theme-icon');
-      if (icon) icon.textContent = next === 'dark' ? '☀️' : '🌙';
       const meta = document.getElementById('themeColorMeta');
       if (meta) meta.content = next === 'dark' ? '#0f1211' : '#faf9f7';
     }
@@ -1883,7 +1924,7 @@
     function renderWelcomeScreen() {
       document.getElementById('messagesContainer').innerHTML = `
         <div class="welcome" id="welcomeScreen">
-          <div class="welcome-moon">🌙</div>
+          <div class="welcome-moon"><svg class="moon-icon moon-icon-xl" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="welcome-title">أهلاً بك في قرار</div>
           <div class="welcome-verse">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
           <div class="welcome-verse-ref">سورة الرعد — ٢٨</div>
@@ -1971,8 +2012,9 @@
         }
       }
 
+      const moonSvg = `<svg class="moon-icon moon-icon-sm" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       el.innerHTML = `
-        <div class="msg-avatar">${role === 'user' ? '👤' : '🌙'}</div>
+        <div class="msg-avatar">${role === 'user' ? '👤' : moonSvg}</div>
         <div class="msg-content">
           <div class="msg-bubble">${escapeHtml(content)}</div>
           ${sourcesHtml}
@@ -1991,7 +2033,7 @@
       el.className = 'typing-indicator message assistant';
       el.id = id;
       el.innerHTML = `
-        <div class="msg-avatar">🌙</div>
+        <div class="msg-avatar"><svg class="moon-icon moon-icon-sm" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="typing-bubble">
           <div class="typing-dot"></div>
           <div class="typing-dot"></div>
@@ -2074,11 +2116,6 @@
     // ── Init ──
     document.addEventListener('DOMContentLoaded', () => {
       setLanguage(currentLang);
-
-      // Sync theme icon with saved theme
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-      const icon = document.querySelector('.theme-icon');
-      if (icon) icon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
 
       if (authToken && currentUser) {
         showChatScreen();
