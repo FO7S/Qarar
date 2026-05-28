@@ -265,21 +265,6 @@ async def chat(req: ChatRequest, authorization: str = Header(None)):
     user = await get_current_user(authorization)
     user_id = str(user["id"])
     user_name = user["name"]
-    subscription_status = user.get("subscription_status", "free")
-
-    limit_check = await database.check_and_increment_message_limit(user_id, subscription_status)
-    if not limit_check["allowed"]:
-        hours = limit_check["reset_in_minutes"] // 60
-        mins = limit_check["reset_in_minutes"] % 60
-        raise HTTPException(
-            status_code=429,
-            detail={
-                "type": "limit_reached",
-                "message": f"وصلت للحد المجاني (5 رسائل). يتجدد خلال {hours} ساعة و{mins} دقيقة.",
-                "reset_in_minutes": limit_check["reset_in_minutes"],
-                "upgrade_required": True
-            }
-        )
 
     history = []
     if req.conversation_id:
@@ -303,7 +288,6 @@ async def chat(req: ChatRequest, authorization: str = Header(None)):
     return {
         "reply": reply,
         "conversation_id": conversation_id,
-        "remaining_messages": limit_check["remaining"],
         "sources": [
             {"book": c["book"], "author": c["author"], "score": c["score"]}
             for c in chunks[:3]
