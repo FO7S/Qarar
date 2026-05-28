@@ -950,7 +950,7 @@
       pointer-events: none;
       transition: opacity 0.3s, visibility 0.3s;
     }
-    .drawer-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
+    .drawer-overlay.open { opacity: 1; visibility: visible; }
 
     /* ══════════════════════════════════════════
        MOBILE — ≤768px
@@ -1373,11 +1373,11 @@
         </div>
       </main>
 
+      <!-- Drawer Overlay (mobile) -->
+      <div class="drawer-overlay" id="drawerOverlay"></div>
+
     </div>
   </div>
-
-  <!-- Drawer Overlay (mobile) -->
-  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 
   <!-- Paywall Modal -->
   <div class="paywall-overlay hidden" id="paywallModal">
@@ -1878,6 +1878,14 @@
       document.getElementById('drawerOverlay').classList.remove('open');
       document.body.style.overflow = '';
     }
+
+    // Close drawer on mobile when tapping outside the sidebar.
+    // Uses touchstart so it fires before any click handlers (no race with hamburger toggle).
+    document.addEventListener('touchstart', function(e) {
+      if (drawerOpen && !document.getElementById('sidebar').contains(e.target)) {
+        closeDrawer();
+      }
+    }, { passive: true });
 
     // ── Paywall ──
     function showPaywallModal(detail) {
